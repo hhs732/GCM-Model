@@ -181,11 +181,10 @@ for p in range (len(HPrecip.T)):     #12
         
         if HTemp[q,p] < Snowto0:
             FcnTempy[q,p] = -1 * (HTemp[q,p]-Snowto0)
-        else: FcnTempy[q,p] = 0
-        
-        if HTemp[q,p] < Snowto0:
             HSnow[q,p] = (CS + (XCFcnTemp * FcnTempy[q,p]) + (XCFcnPrecip * FcnPrecipy[q,p])) * (Sobs[p]/SrawCalNow[p])
-        else: HSnow [q,p] = 0
+        else: 
+            HSnow [q,p] = 0 
+            FcnTempy[q,p] = 0
 #print (HSnow)
 #%%
 # ********************** Export Output in Excelsheet *************************#
@@ -207,14 +206,13 @@ for q in range (len(HSnow)):
 Output.save("Output.xls")
 
 
-#cols = ["A", "B", "C", "D", "E"]
-#txt = "Row %s, Col %s"
-#for num in range(5):
-    #row = sheet1.row(num)
-    #for index, col in enumerate(cols):
-        #value = txt % (num+1, col)
-        #row.write(index, value)
-        
+
+
+
+
+
+
+
 
 
 
