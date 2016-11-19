@@ -1,7 +1,10 @@
 import numpy as np
 import xlrd
+import xlwt
 
-# *********** Import & Read Data ********** #
+DicOutput = {}
+
+# *************************** Import & Read Data **************************** #
 Data1 = xlrd.open_workbook('Data.xlsx')
 nsheet = Data1.nsheets                
 sheetnames = Data1.sheet_names()
@@ -37,7 +40,7 @@ for k in range (0,nsheet):
 #print (M)
 #print (dic) 
 #%%
-# ************** Input Data ************** #
+# ******************************* Input Data ******************************** #
 Input = dic.get('InputData')
 # ************** 5 Modules *************** #
 Mod1 = dic.get('NPHX')      # ****NPHX**** #  
@@ -46,10 +49,10 @@ Mod3 = dic.get('EUHX')      # ****EUHX**** #
 Mod4 = dic.get('NHT')       # ****MNHT**** #
 Mod5 = dic.get('ITC90W')    # ***ITC90W*** #
 #print(Input.item(1,1))
-# ************** Constants *************** #
+# ******************************* Constants ********************************* #
 Const = dic.get('Constants')
 
-# ************* Constants **************** #
+# ****************************** Constants ********************************** #
 CT = Const[1,1]
 XCFNHT = Const[2,1]
 XCFJet120W = Const[3,1]
@@ -83,7 +86,7 @@ CS = Const[33,1]
 XCFcnTemp = Const[34,1]	
 XCFcnPrecip = Const[35,1]
 
-# ***************** Input Variables ***************** #
+# ************************** Input Variables ******************************** #
 Tobs = Input[5:17 ,4]
 NHTmonth = Mod4[4, 2:] 
 NHTyear = Mod4[5:, 2:]
@@ -106,16 +109,19 @@ TPrevm = np.append(LCTobsm , RCTobsm)
 
 Sobs = Input[5:17 ,6]
 #%%
-# **************** Temperature Projection **************** #
+# ************************* Temperature Projection ************************** #
 HTemp = np.empty((len(NHTyear),len(NHTyear.T)))
+
 for p in range (len(NHTyear.T)):     #12
     for q in range (len(NHTyear)):   #400
+        
         TRawCalcNow = (XCFNHT * NHTmonth[p])+(XCFJet120W * Jet120Wmonth[p]) + CT
+        
         HTemp[q,p] = CT + Tobs[p] - TRawCalcNow + (XCFNHT*NHTyear[q,p]) + (XCFJet120W*Jet120Wyear[q,p])
         np.set_printoptions(precision=2, suppress=True)
 #print(HTemp)
 #%%
-# *************** Precipitation Projection *************** #
+# ************************ Precipitation Projection ************************* #
 PPTCRm = np.power(Pobs,0.33333)
     
 HPrecip = np.empty((len(NHTyear),len(NHTyear.T)))
@@ -138,21 +144,24 @@ for p in range (len(NHTyear.T)):     #12
         np.set_printoptions(precision=2, suppress=True)
 #print(HPrecip)
 #%%
-# **************** Evaporation Projection **************** #
+# ************************* Evaporation Projection ************************** #
 LCHTempy = HTemp[:,11]
 RCHTempy = HTemp[:,0:11]
 TPrevy = np.c_[LCHTempy,RCHTempy]
 #print (TPrevy)
 
 HEvap = np.empty((len(HPrecip),len(HPrecip.T)))
+
 for p in range (len(HPrecip.T)):     #12
     for q in range (len(HPrecip)):   #400
+        
         ERawm = np.power((CE + XCPrecip * Pobs[p] + XCTmean * Tobs[p] + XCTPrev * TPrevm[p]),3)
+        
         HEvap[q,p]=ECF * (np.power((CE + (XCPrecip * HPrecip[q,p]) + (XCTmean * HTemp[q,p]) + (XCTPrev * TPrevy[q,p])),3)) * (Eobs[p] / ERawm)
         np.set_printoptions(precision=2, suppress=True)
 #print (HEvap)
 #%%
-# ******************* Snow Projection ******************* #
+# **************************** Snow Projection ****************************** #
 FcnPrecipm = np.exp(-0.5*np.power([(ValueS - X)/WidthS  for X in Pobs],2))
 FcnPrecipy = np.exp(-0.5*np.power([(ValueS - Y)/WidthS  for Y in HPrecip],2))
 RatioStoP = Sobs/Pobs
@@ -177,12 +186,34 @@ for p in range (len(HPrecip.T)):     #12
         if HTemp[q,p] < Snowto0:
             HSnow[q,p] = (CS + (XCFcnTemp * FcnTempy[q,p]) + (XCFcnPrecip * FcnPrecipy[q,p])) * (Sobs[p]/SrawCalNow[p])
         else: HSnow [q,p] = 0
-print (HSnow)
-            
-               
-#CVTobs = Snowto0 * np.ones(np.shape(Tobs))        
+#print (HSnow)
+#%%
+# ********************** Export Output in Excelsheet *************************#
+Output = xlwt.Workbook()
+SnowSheet = Output.add_sheet("HSnow")
+TempSheet = Output.add_sheet("HTemp")
+Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
+SnowMonth = SnowSheet.write(0,0, "100PY/Month")
+NumFormat = xlwt.easyxf(num_format_str='0.00')
+for p in range (len(HSnow.T)):     
+    for q in range (len(HSnow)):
+        SnowXL = SnowSheet.write(q+1, p+1, HSnow[q,p], NumFormat) 
+for p in range (len(HSnow.T)):     
+    SnowRowMonth = SnowSheet.write(0, p+1, Month[p])
+for q in range (len(HSnow)):
+    PYear = -100*q
+    SnowColPYear = SnowSheet.write(q+1, 0, PYear)
+
+Output.save("Output.xls")
 
 
+#cols = ["A", "B", "C", "D", "E"]
+#txt = "Row %s, Col %s"
+#for num in range(5):
+    #row = sheet1.row(num)
+    #for index, col in enumerate(cols):
+        #value = txt % (num+1, col)
+        #row.write(index, value)
         
 
 
