@@ -76,15 +76,9 @@ WidFcnJetD0 = Const[50,1]; LatFcnJetD0 = Const[51,1]; WidFcnTPD0 = Const[52,1]
 LatFcnTPD0 = Const[53,1]; CD0 = Const[54,1]; XCJetD0 = Const[55,1]
 XCTPD0 = Const[56,1]; XCFcnJetD0 = Const[57,1]; XCFcnTPD0 = Const[58,1]
 
-WidFcnJetD40 = Const[61,1]
-LatFcnJetD40 = Const[62,1]
-WidFcnTPD40 = Const[63,1]
-LatFcnTPD40 = Const[64,1]
-CD40 = Const[65,1]
-XCJetD40 = Const[66,1]
-XCTPD40 = Const[67,1]
-XCFcnJetD40 = Const[68,1]
-XCFcnTPD40 = Const[69,1]
+WidFcnJetD40 = Const[61,1]; LatFcnJetD40 = Const[62,1]; CD40 = Const[65,1]
+WidFcnTPD40 = Const[63,1]; LatFcnTPD40 = Const[64,1]; XCJetD40 = Const[66,1]
+XCTPD40 = Const[67,1]; XCFcnJetD40 = Const[68,1]; XCFcnTPD40 = Const[69,1]
 #print(XCFcnTPD40)
 # ************************** Input Variables ******************************** #
 Tobs = Input[5:17, 4]; NHTmonth = Mod4[4, 2:]; NHTyear = Mod4[5:, 2:]
