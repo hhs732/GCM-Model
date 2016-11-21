@@ -220,9 +220,9 @@ for p in range (len(HTemp.T)):
 Name = ['HTemp', 'HPrecip', 'HEvap', 'HSnow', 'HRainDay', 'HDayL0', 'HDayH40']
 Variable = [HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
 
-Output1 = xlwt.Workbook()
-def f(Sheetname,ProjectedData):
-    Sheet = Output1.add_sheet(Sheetname)
+Output = xlwt.Workbook()
+def WRXLS(Sheetname,ProjectedData):
+    Sheet = Output.add_sheet(Sheetname)
     Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
     Sheet.write(0,0, "100PY/Month")
     for p in range (len(HTemp.T)): 
@@ -234,10 +234,10 @@ def f(Sheetname,ProjectedData):
     for p in range (len(HTemp.T)):     
         for q in range (len(HTemp)):
             Sheet.write(q+1, p+1, ProjectedData[q,p], NumFormat)
-    Output1.save("Output1.xls")
+    Output.save("Output.xls")
     return
 for u in range (7):
-    f(Name[u],Variable[u])
+    WRXLS(Name[u],Variable[u])
 
 
 
