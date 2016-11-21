@@ -221,7 +221,7 @@ Name = ['HTemp', 'HPrecip', 'HEvap', 'HSnow', 'HRainDay', 'HDayL0', 'HDayH40']
 Variable = [HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
 
 Output = xlwt.Workbook()
-def WRXLS(Sheetname,ProjectedData):
+def WriteToXLS(Sheetname,ProjectedData):
     Sheet = Output.add_sheet(Sheetname)
     Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
     Sheet.write(0,0, "100PY/Month")
@@ -237,7 +237,7 @@ def WRXLS(Sheetname,ProjectedData):
     Output.save("Output.xls")
     return
 for u in range (7):
-    WRXLS(Name[u],Variable[u])
+    WriteToXLS(Name[u],Variable[u])
 
 
 
