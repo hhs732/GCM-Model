@@ -40,6 +40,7 @@ for k in range (0,nsheet):
 #%%
 # ******************************* Input Data ******************************** #
 Input = dic.get('InputData')
+Const = dic.get('Constants')
 # ************** 5 Modules *************** #
 Mod1 = dic.get('NPHX')      # ****NPHX**** #  
 Mod2 = dic.get('Jet120W')   # ***Jet120W** #
@@ -48,8 +49,6 @@ Mod4 = dic.get('NHT')       # ****MNHT**** #
 Mod5 = dic.get('ITC90W')    # ***ITC90W*** #
 #print(Input.item(1,1))
 # ******************************* Constants ********************************* #
-Const = dic.get('Constants')
-
 CT = Const[1,1]; XCFNHT = Const[2,1]; XCFJet120W = Const[3,1]
 
 CP = Const[6,1]; XCEUHX = Const[7,1]; XCITC = Const[8,1]  #XCITC90W
@@ -61,7 +60,7 @@ WidITC = Const[18,1]; LatNPHX = Const[19,1]; WidNPHX = Const[20,1]
 CE = Const[23,1]; XCPrecip = Const[24,1]; XCTmean = Const[25,1]
 XCTPrev = Const[26,1]; ECF = Const[27,1]
 
-Snowto0 = Const[30,1]; WidthS = Const[31,1]; ValueS = Const[32,1]	
+Snowto0 = Const[30,1]; WidthS = Const[31,1]; ValueS = Const[32,1];
 CS = Const[33,1]; XCFcnTemp = Const[34,1]; XCFcnPrecip = Const[35,1]
 
 CRD = Const[38,1]; XCPrecRD = Const[39,1]; XCJetRD = Const[40,1]	
@@ -76,7 +75,7 @@ XCTPD0 = Const[56,1]; XCFcnJetD0 = Const[57,1]; XCFcnTPD0 = Const[58,1]
 WidFcnJetD40 = Const[61,1]; LatFcnJetD40 = Const[62,1]; CD40 = Const[65,1]
 WidFcnTPD40 = Const[63,1]; LatFcnTPD40 = Const[64,1]; XCJetD40 = Const[66,1]
 XCTPD40 = Const[67,1]; XCFcnJetD40 = Const[68,1]; XCFcnTPD40 = Const[69,1]
-#print(XCFcnTPD40)
+
 # ************************** Input Variables ******************************** #
 Tobs = Input[5:17, 4]; NHTmonth = Mod4[4, 2:]; NHTyear = Mod4[5:, 2:]
 Jet120Wmonth = Mod2[3, 2:]; Jet120Wyear = Mod2[4:, 2:]
@@ -90,7 +89,6 @@ TPrevm = np.append(LCTobsm , RCTobsm)
 
 Sobs = Input[5:17, 6]; RDobs = Input[5:17, 7];
 D0obs = Input[5:17, 8]; D40obs = Input[5:17, 9]
-#print(D40obs)
 #%%
 # ************************* Temperature Projection ************************** #
 HTemp = np.empty((len(NHTyear),len(NHTyear.T)))
@@ -216,50 +214,27 @@ for p in range (len(HTemp.T)):
         HDay40[q,p] = (CD40 + (XCTPD40 * HTemp[q,p]) + (XCJetD40 * Jet120Wyear[q,p]) + (XCFcnJetD40 * FcnJetyD40[q,p]) + (XCFcnTPD40 * FcnTPyD40[q,p])) * (D40obs[p]/D40rawCalNow[p])
 #print (HDay40[0:400, 4:9])
 #%%
-# ********************** Export Output in an Excelsheet **********************#
+# ********************** Export Output in an Excel file **********************#
 Name = ['HTemp', 'HPrecip', 'HEvap', 'HSnow', 'HRainDay', 'HDayL0', 'HDayH40']
 Variable = [HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
-
+SizeVar = np.array(np.shape(Variable))
 Output = xlwt.Workbook()
-def WriteToXLS(Sheetname,ProjectedData):
+def Write2XLS(Sheetname,ProjectedData):
     Sheet = Output.add_sheet(Sheetname)
     Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
-    Sheet.write(0,0, "100PY/Month")
-    for p in range (len(HTemp.T)): 
+    Sheet.write(0, 0, "100PY/Month")
+    for p in range (SizeVar[2]): 
         Sheet.write(0, p+1, Month[p])
-    for q in range (len(HTemp)):
+    for q in range (SizeVar[1]):
         PYear = -100*q
         Sheet.write(q+1, 0, PYear) #ColPYear
     NumFormat = xlwt.easyxf(num_format_str='0.00')    
-    for p in range (len(HTemp.T)):     
-        for q in range (len(HTemp)):
+    for p in range (SizeVar[2]):     
+        for q in range (SizeVar[1]):
             Sheet.write(q+1, p+1, ProjectedData[q,p], NumFormat)
     Output.save("Output.xls")
     return
-for u in range (7):
-    WriteToXLS(Name[u],Variable[u])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+for u in range (SizeVar[0]):
+    Write2XLS(Name[u],Variable[u])
 
 
