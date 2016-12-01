@@ -36,7 +36,25 @@ for k in range (0,nsheet):
             np.set_printoptions(precision=3, suppress=True)
             dic[sheetnamez]=M
 #print (M)
-#print (dic) 
+#print (dic)
+#%%
+# ************* Function to Export any Data in an excelsheet *****************#
+def Write2XLS(ProjectedData,Sheetname,SizeProjData,Time,XLSFileName):
+    Output = xlwt.Workbook()
+    for v in range (SizeProjData[2]):
+        Sheet = Output.add_sheet(Sheetname[v])
+        Sheet.write(0, 0, "100PY/Time")
+        for p in range (SizeProjData[1]): 
+            Sheet.write(0, p+1, Time[p])
+        for q in range (SizeProjData[0]):
+            PYear = -100*q
+            Sheet.write(q+1, 0, PYear) #ColPYear
+        NumFormat = xlwt.easyxf(num_format_str='0.00')
+        for p in range (SizeProjData[1]):
+            for q in range (SizeProjData[0]):
+                Sheet.write(q+1, p+1, ProjectedData[q,p,v], NumFormat)
+    Output.save(XLSFileName[0])
+    return 
 #%%
 # ******************************* Input Data ******************************** #
 Input = dic.get('InputData')
@@ -215,24 +233,12 @@ for p in range (len(HTemp.T)):
 #print (HDay40[0:400, 4:9])
 #%%
 # ***************** Export Monthly Output in an Excel file *******************#
+XLSNameMon = np.array(['ProjMonVars.xls'])
 MonClimVar = np.dstack([HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40])
 SizeMVar = np.array(np.shape(MonClimVar))
-OutputMon = xlwt.Workbook()
-Sheetname1 = ['MTemp', 'MPrecip', 'MEvap', 'MSnow', 'MRainDay', 'MDayL0', 'MDayH40']
-for v in range (SizeMVar[2]):
-    Sheet1 = OutputMon.add_sheet(Sheetname1[v])
-    Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
-    Sheet1.write(0, 0, "100PY/Month")
-    for p in range (SizeMVar[1]):
-        Sheet1.write(0, p+1, Month[p])
-    for q in range (SizeMVar[0]):
-        PYear1 = -100*q
-        Sheet1.write(q+1, 0, PYear1) #ColPYear
-    NumFormat = xlwt.easyxf(num_format_str='0.00')
-    for p in range (SizeMVar[1]):
-        for q in range (SizeMVar[0]):
-            Sheet1.write(q+1,p+1,MonClimVar[q,p,v])
-OutputMon.save("OutputMon.xls")
+Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
+SheetnameMon = ['MTemp', 'MPrecip', 'MEvap', 'MSnow', 'MRainDay', 'MDayL0', 'MDayH40']
+Write2XLS(MonClimVar,SheetnameMon,SizeMVar,Month,XLSNameMon)
 #%%
 # ************************* Seasonal Projection ******************************#
 SeasonalTemp = np.empty((len(HTemp),4))
@@ -248,29 +254,14 @@ for v in range (SizeSVar[0]):
         for q in range (SizeSVar[1]):
             VariableVth = SeasonalSVariable [v]
             SeasonalSumVar[q,p,v] = VariableVth[q, 3*p:3*(p+1)].sum()
-
+#%%
+# ************* Export Seasonal Output in an Excel file **********************#
+XLSNameSSL = np.array(['ProjSSLVars.xls'])
 SSLClimVar = np.dstack([SeasonalTemp,SeasonalSumVar])
-SizeSSLClimVar = np.array(np.shape(SSLClimVar))
-
-OutputSSL = xlwt.Workbook()
-Sheetname2 = ['SSLTemp', 'SSLPrecip', 'SSLEvap', 'SSLSnow', 'SSLRainDay', 'SSLDayL0', 'SSLDayH40']
-for v in range (SizeSSLClimVar[2]):
-    Sheet2 = OutputSSL.add_sheet(Sheetname2[v])
-    Season = np.array(["Winter", "Spring", "Summer", "Autumn"])
-    Sheet2.write(0, 0, "100PY/Season")
-    for p in range (SizeSSLClimVar[1]):
-        Sheet2.write(0, p+1, Season[p])
-    for q in range (SizeSSLClimVar[0]):
-        PYear2 = -100*q
-        Sheet2.write(q+1, 0, PYear2) #ColPYear
-    NumFormat = xlwt.easyxf(num_format_str='0.00')
-    for p in range (SizeSSLClimVar[1]):
-        for q in range (SizeSSLClimVar[0]):
-            Sheet2.write(q+1,p+1,SSLClimVar[q,p,v])
-OutputSSL.save("OutputSSL.xls")
-
-
-    
+SizeSSLVar = np.array(np.shape(SSLClimVar))
+SheetnameSSL = ['SSLTemp', 'SSLPrecip', 'SSLEvap', 'SSLSnow', 'SSLRainDay', 'SSLDayL0', 'SSLDayH40']
+Season = np.array(["Winter", "Spring", "Summer", "Autumn"])
+Write2XLS(SSLClimVar,SheetnameSSL,SizeSSLVar,Season,XLSNameSSL)   
     
 
 
