@@ -93,7 +93,6 @@ XCTPD0 = Const[56,1]; XCFcnJetD0 = Const[57,1]; XCFcnTPD0 = Const[58,1]
 WidFcnJetD40 = Const[61,1]; LatFcnJetD40 = Const[62,1]; CD40 = Const[65,1]
 WidFcnTPD40 = Const[63,1]; LatFcnTPD40 = Const[64,1]; XCJetD40 = Const[66,1]
 XCTPD40 = Const[67,1]; XCFcnJetD40 = Const[68,1]; XCFcnTPD40 = Const[69,1]
-
 # ************************** Input Variables ******************************** #
 Tobs = Input[5:17, 4]; NHTmonth = Mod4[4, 2:]; NHTyear = Mod4[5:, 2:]
 Jet120Wmonth = Mod2[3, 2:]; Jet120Wyear = Mod2[4:, 2:]
@@ -233,14 +232,14 @@ for p in range (len(HTemp.T)):
 #print (HDay40[0:400, 4:9])
 #%%
 # ***************** Export Monthly Output in an Excel file *******************#
-XLSNameMon = np.array(['ProjMonVars.xls'])
 MonClimVar = np.dstack([HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40])
+XLSNameMon = np.array(['ProjMonVars.xls'])
 SizeMVar = np.array(np.shape(MonClimVar))
 Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
 SheetnameMon = ['MTemp', 'MPrecip', 'MEvap', 'MSnow', 'MRainDay', 'MDayL0', 'MDayH40']
 Write2XLS(MonClimVar,SheetnameMon,SizeMVar,Month,XLSNameMon)
 #%%
-# ************************* Seasonal Projection ******************************#
+# ************************ Seasonal Projection *******************************#
 SeasonalTemp = np.empty((len(HTemp),4))
 for p in range (4):
     for q in range (len(HTemp)):
@@ -254,19 +253,38 @@ for v in range (SizeSVar[0]):
         for q in range (SizeSVar[1]):
             VariableVth = SeasonalSVariable [v]
             SeasonalSumVar[q,p,v] = VariableVth[q, 3*p:3*(p+1)].sum()
+SSLClimVar = np.dstack([SeasonalTemp,SeasonalSumVar])
 #%%
 # ************* Export Seasonal Output in an Excel file **********************#
 XLSNameSSL = np.array(['ProjSSLVars.xls'])
-SSLClimVar = np.dstack([SeasonalTemp,SeasonalSumVar])
 SizeSSLVar = np.array(np.shape(SSLClimVar))
 SheetnameSSL = ['SSLTemp', 'SSLPrecip', 'SSLEvap', 'SSLSnow', 'SSLRainDay', 'SSLDayL0', 'SSLDayH40']
 Season = np.array(["Winter", "Spring", "Summer", "Autumn"])
-Write2XLS(SSLClimVar,SheetnameSSL,SizeSSLVar,Season,XLSNameSSL)   
+Write2XLS(SSLClimVar,SheetnameSSL,SizeSSLVar,Season,XLSNameSSL)
+#%%
+# ************************ Annual Projection *********************************#           
+AnnualTemp = np.empty((len(HTemp)))
+for q in range (len(HTemp)):
+    AnnualTemp[q] = HTemp[q,0:12].mean()
+AnnualTemp = np.reshape(AnnualTemp, (400,1))
+AnnualSVariable = [HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
+SizeSAVar = np.array(np.shape(AnnualSVariable))
+AnnualSumVar = np.empty((SizeSAVar[1], 1, SizeSAVar[0]))
+for v in range (SizeSAVar[0]):
+    for q in range (SizeSVar[1]):
+        VariableAVth = SeasonalSVariable [v]
+        AnnualSumVar[q,0,v] = VariableAVth[q, 0:12].sum()
+AnnualSumVar = np.reshape(AnnualSumVar, (400,6))
+AnnualClimVar = np.concatenate((AnnualTemp,AnnualSumVar),axis=1)
+ANNClimVar = np.reshape(AnnualClimVar, (400,1,7))
+#%%
+# *************** Export Annual Output in an Excel file **********************#
+XLSNameANN = np.array(['ProjAnnVars.xls'])
+SizeANNVar = np.array(np.shape(ANNClimVar))
+SheetnameANN = ['ANNTemp', 'ANNPrecip', 'ANNEvap', 'ANNSnow', 'ANNRainDay', 'ANNDayL0', 'ANNDayH40']
+Year = np.array(["Yearly"])
+Write2XLS(ANNClimVar,SheetnameANN,SizeANNVar,Year,XLSNameANN)   
     
-
-
-
-
 
 
 
