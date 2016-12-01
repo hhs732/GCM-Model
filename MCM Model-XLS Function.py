@@ -283,4 +283,3 @@ Write2XLS(SSLClimVar,SheetnameSSL,SizeSSLVar,Season,XLSNameSSL)
 
 
 
-
