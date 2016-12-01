@@ -248,7 +248,6 @@ for v in range (SizeSVar[0]):
         for q in range (SizeSVar[1]):
             VariableVth = SeasonalSVariable [v]
             SeasonalSumVar[q,p,v] = VariableVth[q, 3*p:3*(p+1)].sum()
-SizeSSLSumVar = np.array(np.shape(SeasonalSumVar)) 
 
 SSLClimVar = np.dstack([SeasonalTemp,SeasonalSumVar])
 SizeSSLClimVar = np.array(np.shape(SSLClimVar))
@@ -271,32 +270,28 @@ for v in range (SizeSSLClimVar[2]):
 OutputSSL.save("OutputSSL.xls")
 #%%
 # ************* Function to Export any Data in an excelsheet *****************#
-Name = ['HTemp', 'HPrecip', 'HEvap', 'HSnow', 'HRainDay', 'HDayL0', 'HDayH40']
-Variable = [HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
-SizeVar = np.array(np.shape(Variable))
-Output = xlwt.Workbook()
-OutputSSL = xlwt.Workbook()
-def Write2XLS(Sheetname,ProjectedData):
-    Sheet = Output.add_sheet(Sheetname)
-    Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
-    Sheet.write(0, 0, "100PY/Month")
-    for p in range (SizeVar[2]): 
-        Sheet.write(0, p+1, Month[p])
-    for q in range (SizeVar[1]):
-        PYear = -100*q
-        Sheet.write(q+1, 0, PYear) #ColPYear
-    NumFormat = xlwt.easyxf(num_format_str='0.00')    
-    for p in range (SizeVar[2]):     
-        for q in range (SizeVar[1]):
-            Sheet.write(q+1, p+1, ProjectedData[q,p], NumFormat)
+def Write2XLS(ProjectedData,Sheetname,Size,Time):
+    Output = xlwt.Workbook()
+    for v in range (Size[2]):
+        Sheet = Output.add_sheet(Sheetname[v])
+        MSY = np.array(Time)
+        Sheet.write(0, 0, "100PY/Time")
+        for p in range (Size[1]): 
+            Sheet.write(0, p+1, MSY[p])
+        for q in range (Size[0]):
+            PYear = -100*q
+            Sheet.write(q+1, 0, PYear) #ColPYear
+        NumFormat = xlwt.easyxf(num_format_str='0.00')
+        for p in range (Size[1]):
+            for q in range (Size[0]):
+                Sheet.write(q+1, p+1, ProjectedData[q,p,v], NumFormat)
     Output.save("Output.xls")
     return
-for u in range (SizeVar[0]):
-    Write2XLS(Name[u],Variable[u])
 
+Write2XLS(SSLClimVar,Sheetname2,SizeSSLClimVar,Season)
 
-
-
+    
+    
 
 
 
