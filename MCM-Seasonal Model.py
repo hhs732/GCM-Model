@@ -243,32 +243,31 @@ for p in range (4):
     for q in range (len(HTemp)):
         SeasonalTemp[q,p] = HTemp[q,3*p:3*(p+1)].mean()
 #print (SeasonalTemp)
-SeasonalVariable = [HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
-SizeSVar = np.array(np.shape(SeasonalVariable))
-SeasonalSumVar = np.empty((len(HPrecip),4,SizeSVar[0]))
+SeasonalSVariable = [HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
+SizeSVar = np.array(np.shape(SeasonalSVariable))
+SeasonalSumVar = np.empty((len(HPrecip), 4, SizeSVar[0]))
 for v in range (SizeSVar[0]):
     for p in range (4):
         for q in range (len(HPrecip)):
-            VariableVth = SeasonalVariable [v]
-            SeasonalSumVar[q,p,v] = VariableVth[q,3*p:3*(p+1)].sum()
-
-SizeSSLSumVar = np.array(np.shape(SeasonalSumVar))        
-OutputSSL = xlwt.Workbook()
-#def Write2XLS_SSLVar(Sheetname2,ProjectedSSLData):
-Sheet2 = OutputSSL.add_sheet('Sheetname2')
-    #Season = np.array(["Winter", "Spring", "Summer", "Fall"])
-    #Sheet2.write(0, 0, "100PY/Month")
-    #for p in range (SizeSVar[2]): 
-        #Sheet2.write(0, p+1, Season[p])
-    #for q in range (SizeVar[1]):
-        #PYear = -100*q
-        #Sheet.write(q+1, 0, PYear) #ColPYear
+            VariableVth = SeasonalSVariable [v]
+            SeasonalSumVar[q,p,v] = VariableVth[q, 3*p:3*(p+1)].sum()
+SizeSSLSumVar = np.array(np.shape(SeasonalSumVar)) 
+OutputSS = xlwt.Workbook()
+Sheet2 = OutputSS.add_sheet('Sheetname2')
+Season = np.array(["Winter", "Spring", "Summer", "Autumn"])
+    Sheet.write(0, 0, "100PY/Month")
 NumFormat = xlwt.easyxf(num_format_str='0.00')    
 for p in range (SizeSSLSumVar[1]):
     for q in range (SizeSSLSumVar[0]):
         Sheet2.write(q,p,SeasonalSumVar[q,p,5])
-OutputSSL.save("OutputSSL.xls")
-    #return
+OutputSS.save("OutputSS.xls") 
+
+
+SSLClimVar = np.dstack([SeasonalSumVar,SeasonalTemp])
+SizeSSLClimVar = np.array(np.shape(SSLClimVar))
+
+
+
 
 
 
