@@ -269,7 +269,30 @@ for v in range (SizeSSLClimVar[2]):
         for q in range (SizeSSLClimVar[0]):
             Sheet2.write(q+1,p+1,SSLClimVar[q,p,v])
 OutputSSL.save("OutputSSL.xls")
-
+#%%
+# ************* Function to Export any Data in an excelsheet *****************#
+Name = ['HTemp', 'HPrecip', 'HEvap', 'HSnow', 'HRainDay', 'HDayL0', 'HDayH40']
+Variable = [HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40]
+SizeVar = np.array(np.shape(Variable))
+Output = xlwt.Workbook()
+OutputSSL = xlwt.Workbook()
+def Write2XLS(Sheetname,ProjectedData):
+    Sheet = Output.add_sheet(Sheetname)
+    Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
+    Sheet.write(0, 0, "100PY/Month")
+    for p in range (SizeVar[2]): 
+        Sheet.write(0, p+1, Month[p])
+    for q in range (SizeVar[1]):
+        PYear = -100*q
+        Sheet.write(q+1, 0, PYear) #ColPYear
+    NumFormat = xlwt.easyxf(num_format_str='0.00')    
+    for p in range (SizeVar[2]):     
+        for q in range (SizeVar[1]):
+            Sheet.write(q+1, p+1, ProjectedData[q,p], NumFormat)
+    Output.save("Output.xls")
+    return
+for u in range (SizeVar[0]):
+    Write2XLS(Name[u],Variable[u])
 
 
 
