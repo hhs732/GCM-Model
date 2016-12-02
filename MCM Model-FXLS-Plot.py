@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
 import xlwt
-
 # *************************** Import & Read Data **************************** #
 Data1 = xlrd.open_workbook('Data.xlsx')
 nsheet = Data1.nsheets                
@@ -58,19 +57,21 @@ def Write2XLS(ProjectedData,Sheetname,SizeProjData,Time,XLSFileName):
     return 
 #%%
 # ******************* Function to Plot Variables **************************** #
-def PlotSSLVar(Time1,Time2,NumYVariable1,NumYVariable2,LBYaxis,GraphTitle,PlotName):
-    XYear = np.empty((SizeSSLVar[0],1))
-    for q in range (SizeSSLVar[0]):
+def PlotClimVar(ClimMatrix1,ClimMatrix2,Time1,Time2,YVariable1,YVariable2,LBGraph1,LBGraph2,LBYaxis,GraphTitle,PlotName):
+    XYear = np.empty(((np.array(np.shape(ClimMatrix1[:,0,0]))),1))
+    for q in range ((np.array(np.shape(ClimMatrix1[:,0,0])))):
         XYear[q,0] = -100*q
-    plt.plot(XYear,SSLClimVar[:,Time1,NumYVariable1], label='Winter', color='blue')
-    plt.plot(XYear,SSLClimVar[:,Time2,NumYVariable2], label='Summer', color='red')
+    if LBGraph1!=LBGraph2:
+        plt.plot(XYear,ClimMatrix1[:,Time1,YVariable1], label=LBGraph1, color='blue')
+        plt.plot(XYear,ClimMatrix2[:,Time2,YVariable2], label=LBGraph2, color='red')
+    else:plt.plot(XYear,ClimMatrix1[:,Time1,YVariable1], label=LBGraph1, color='blue')       
     #MinY = np.amin(SSLClimVar[:,:,NumYValue])
     #MaxY = np.amax(SSLClimVar[:,:,NumYValue])
     #plt.axis([-40000, 0, MinY, MaxY])
     plt.xlabel('Calendar Years BP')
     plt.ylabel(LBYaxis)
     plt.title(GraphTitle)
-    plt.legend(loc='lower left')
+    plt.legend(bbox_to_anchor=(0., 1.02, 1, 0.102), loc=0, ncol=2, mode="expand", borderaxespad=2)
     plt.savefig(PlotName)
     plt.show()
     return
@@ -302,18 +303,18 @@ XLSNameANN = np.array(['ProjAnnVars.xls'])
 SizeANNVar = np.array(np.shape(ANNClimVar))
 SheetnameANN = ['ANNTemp', 'ANNPrecip', 'ANNEvap', 'ANNSnow', 'ANNRainDay', 'ANNDayL0', 'ANNDayH40']
 Year = np.array(["Yearly"])
-Write2XLS(ANNClimVar,SheetnameANN,SizeANNVar,Year,XLSNameANN)   
+Write2XLS(ANNClimVar,SheetnameANN,SizeANNVar,Year,XLSNameANN) 
 #%%
-# ************************* Plot Outputs *************************************#   
-PlotSSLVar(0,2,0,0,'Seasonal Mean Temperature','Changes in Winter and Summer Temperature','SSLTemp')   
-PlotSSLVar(0,2,1,1,'Seasonal Mean Precipitation','Changes in Winter and Summer Precipitation','SSLPrecip')
-PlotSSLVar(0,2,2,2,'Seasonal Mean Evaporation','Changes in Winter and Summer Evaporation','SSLEvap')
-PlotSSLVar(0,2,4,4,'Seasonal Mean RainDays','Changes in Winter and Summer RainDays','SSLRainyDays')
-PlotSSLVar(0,0,5,5,'Winter Mean DayL0','Changes in the Number of DayL0 in Winter','WinterDayL0')
-PlotSSLVar(0,0,3,3,'Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
-
-
-
+# ************************* Plot Outputs *************************************#
+PlotClimVar(SSLClimVar,SSLClimVar,0,2,0,0,'Winter','Summer','Seasonal Mean Temperature','Changes in Winter and Summer Temperature','SSLTemp')   
+PlotClimVar(SSLClimVar,SSLClimVar,0,2,1,1,'Winter','Summer','Seasonal Mean Precipitation','Changes in Winter and Summer Precipitation','SSLPrecip')
+PlotClimVar(SSLClimVar,SSLClimVar,0,2,2,2,'Winter','Summer','Seasonal Mean Evaporation','Changes in Winter and Summer Evaporation','SSLEvap')
+PlotClimVar(SSLClimVar,SSLClimVar,0,2,4,4,'Winter','Summer','Seasonal Mean RainDays','Changes in Winter and Summer RainDays','SSLRainyDays')
+PlotClimVar(SSLClimVar,SSLClimVar,0,0,5,5,'Winter','Winter','Winter Mean DayL0','Changes in the Number of DayL0 in Winter','WinterDayL0')
+PlotClimVar(SSLClimVar,SSLClimVar,0,0,3,3,'Winter','Winter','Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
+PlotClimVar(SSLClimVar,SSLClimVar,0,0,3,3,'Winter','Winter','Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
+PlotClimVar(ANNClimVar,ANNClimVar,0,0,1,3,'Precip','Snow','Precip and Snow','Precip vs. Snowfall','Precip-Snow')
+PlotClimVar(MonClimVar,SSLClimVar,6,2,1,1,'MonPrecip','SSLPrecip','Monthly and Seasonal','Monthly Vs. Seasonal Precip','MonSSLPrecip')
 
 
 
