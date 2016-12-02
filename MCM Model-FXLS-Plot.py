@@ -58,7 +58,7 @@ def Write2XLS(ProjectedData,Sheetname,SizeProjData,Time,XLSFileName):
     return 
 #%%
 # ******************* Function to Plot Variables **************************** #
-def PlotSSLVar(Time1,Time2,NumYVariable1,NumYVariable2,LBYaxis,TitleGraph):
+def PlotSSLVar(Time1,Time2,NumYVariable1,NumYVariable2,LBYaxis,GraphTitle,PlotName):
     XYear = np.empty((SizeSSLVar[0],1))
     for q in range (SizeSSLVar[0]):
         XYear[q,0] = -100*q
@@ -69,10 +69,10 @@ def PlotSSLVar(Time1,Time2,NumYVariable1,NumYVariable2,LBYaxis,TitleGraph):
     #plt.axis([-40000, 0, MinY, MaxY])
     plt.xlabel('Calendar Years BP')
     plt.ylabel(LBYaxis)
-    plt.title(TitleGraph)
+    plt.title(GraphTitle)
     plt.legend(loc='lower left')
+    plt.savefig(PlotName)
     plt.show()
-    plt.savefig('season.png')
     return
 #%%
 # ******************************* Input Data ******************************** #
@@ -305,12 +305,23 @@ Year = np.array(["Yearly"])
 Write2XLS(ANNClimVar,SheetnameANN,SizeANNVar,Year,XLSNameANN)   
 #%%
 # ************************* Plot Outputs *************************************#   
-PlotSSLVar(0,2,0,0,'Seasonal Mean Temperature','Changes in Winter and Summer Temperature')   
-PlotSSLVar(0,2,1,1,'Seasonal Mean Precipitation','Changes in Winter and Summer Precipitation')
-PlotSSLVar(0,2,2,2,'Seasonal Mean Evaporation','Changes in Winter and Summer Evaporation')
-PlotSSLVar(0,2,4,4,'Seasonal Mean RainDays','Changes in Winter and Summer RainDays')
-PlotSSLVar(0,2,5,5,'Seasonal Mean DayL0','Changes in Winter and Summer DayL0')
-PlotSSLVar(0,0,3,3,'Winter Mean Snowfall','Snowfall in Winter')
+PlotSSLVar(0,2,0,0,'Seasonal Mean Temperature','Changes in Winter and Summer Temperature','SSLTemp')   
+PlotSSLVar(0,2,1,1,'Seasonal Mean Precipitation','Changes in Winter and Summer Precipitation','SSLPrecip')
+PlotSSLVar(0,2,2,2,'Seasonal Mean Evaporation','Changes in Winter and Summer Evaporation','SSLEvap')
+PlotSSLVar(0,2,4,4,'Seasonal Mean RainDays','Changes in Winter and Summer RainDays','SSLRainyDays')
+PlotSSLVar(0,0,5,5,'Winter Mean DayL0','Changes in the Number of DayL0 in Winter','WinterDayL0')
+PlotSSLVar(0,0,3,3,'Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
+
+
+
+
+
+
+
+
+
+
+
 
 
 
