@@ -315,12 +315,6 @@ PlotClimVar(SSLClimVar,SSLClimVar,0,0,5,5,'Winter','Winter','Winter Mean DayL0',
 PlotClimVar(SSLClimVar,SSLClimVar,0,0,3,3,'Winter','Winter','Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
 PlotClimVar(ANNClimVar,ANNClimVar,0,0,1,3,'Precip','Snow','Precip and Snow','Precip vs. Snowfall','Precip-Snow')
 PlotClimVar(MonClimVar,SSLClimVar,6,2,1,1,'MonPrecip','SSLPrecip','Monthly and Seasonal','Monthly Vs. Seasonal Precip','MonSSLPrecip')
-#%%
-# ********************** Plot Outputs in Excel *******************************#
-
-
-
-
 
 
 
