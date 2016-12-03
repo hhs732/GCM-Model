@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+#import xlsxwriter
 import xlrd
 import xlwt
 # *************************** Import & Read Data **************************** #
@@ -70,8 +71,8 @@ def PlotClimVar(ClimMatrix1,ClimMatrix2,Time1,Time2,YVariable1,YVariable2,LBGrap
     #plt.axis([-40000, 0, MinY, MaxY])
     plt.xlabel('Calendar Years BP')
     plt.ylabel(LBYaxis)
-    plt.title(GraphTitle)
-    plt.legend(bbox_to_anchor=(0., 1.02, 1, 0.102), loc=0, ncol=2, mode="expand", borderaxespad=2)
+    plt.title(GraphTitle,loc='left',x=0.0,y=1.03,fontsize=12)
+    plt.legend(bbox_to_anchor=(1, 1), loc=5, borderaxespad=0)
     plt.savefig(PlotName)
     plt.show()
     return
@@ -312,10 +313,10 @@ PlotClimVar(SSLClimVar,SSLClimVar,0,2,2,2,'Winter','Summer','Seasonal Mean Evapo
 PlotClimVar(SSLClimVar,SSLClimVar,0,2,4,4,'Winter','Summer','Seasonal Mean RainDays','Changes in Winter and Summer RainDays','SSLRainyDays')
 PlotClimVar(SSLClimVar,SSLClimVar,0,0,5,5,'Winter','Winter','Winter Mean DayL0','Changes in the Number of DayL0 in Winter','WinterDayL0')
 PlotClimVar(SSLClimVar,SSLClimVar,0,0,3,3,'Winter','Winter','Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
-PlotClimVar(SSLClimVar,SSLClimVar,0,0,3,3,'Winter','Winter','Winter Mean Snowfall','Snowfall in Winter','WinterSnow')
 PlotClimVar(ANNClimVar,ANNClimVar,0,0,1,3,'Precip','Snow','Precip and Snow','Precip vs. Snowfall','Precip-Snow')
 PlotClimVar(MonClimVar,SSLClimVar,6,2,1,1,'MonPrecip','SSLPrecip','Monthly and Seasonal','Monthly Vs. Seasonal Precip','MonSSLPrecip')
-
+#%%
+# ********************** Plot Outputs in Excel *******************************#
 
 
 
