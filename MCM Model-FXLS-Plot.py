@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-#import xlsxwriter
 import xlrd
 import xlwt
 # *************************** Import & Read Data **************************** #
@@ -40,8 +39,9 @@ for k in range (0,nsheet):
 #print (dic)
 #%%
 # ************* Function to Export any Data in an excelsheet *****************#
-def Write2XLS(ProjectedData,Sheetname,SizeProjData,Time,XLSFileName):
+def Write2XLS(ProjectedData,Sheetname,Time,XLSFileName):
     Output = xlwt.Workbook()
+    SizeProjData = np.array(np.shape(ProjectedData))
     for v in range (SizeProjData[2]):
         Sheet = Output.add_sheet(Sheetname[v])
         Sheet.write(0, 0, "100PY/Time")
@@ -54,7 +54,7 @@ def Write2XLS(ProjectedData,Sheetname,SizeProjData,Time,XLSFileName):
         for p in range (SizeProjData[1]):
             for q in range (SizeProjData[0]):
                 Sheet.write(q+1, p+1, ProjectedData[q,p,v], NumFormat)
-    Output.save(XLSFileName[0])
+    Output.save(XLSFileName)
     return 
 #%%
 # ******************* Function to Plot Variables **************************** #
@@ -74,6 +74,7 @@ def PlotClimVar(ClimMatrix1,ClimMatrix2,Time1,Time2,YVariable1,YVariable2,LBGrap
     plt.title(GraphTitle,loc='left',x=0.0,y=1.03,fontsize=12)
     plt.legend(bbox_to_anchor=(1, 1), loc=5, borderaxespad=0)
     plt.savefig(PlotName)
+    plt.close()
     plt.show()
     return
 #%%
@@ -254,11 +255,9 @@ for p in range (len(HTemp.T)):
 #%%
 # ***************** Export Monthly Output in an Excel file *******************#
 MonClimVar = np.dstack([HTemp, HPrecip, HEvap, HSnow, HRainDay, HDay0, HDay40])
-XLSNameMon = np.array(['ProjMonVars.xls'])
-SizeMVar = np.array(np.shape(MonClimVar))
 Month = np.array(["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])
 SheetnameMon = ['MTemp', 'MPrecip', 'MEvap', 'MSnow', 'MRainDay', 'MDayL0', 'MDayH40']
-Write2XLS(MonClimVar,SheetnameMon,SizeMVar,Month,XLSNameMon)
+Write2XLS(MonClimVar,SheetnameMon,Month,'ProjMonVars.xls')
 #%%
 # ************************ Seasonal Projection *******************************#
 SeasonalTemp = np.empty((len(HTemp),4))
@@ -277,11 +276,9 @@ for v in range (SizeSVar[0]):
 SSLClimVar = np.dstack([SeasonalTemp,SeasonalSumVar])
 #%%
 # ************* Export Seasonal Output in an Excel file **********************#
-XLSNameSSL = np.array(['ProjSSLVars.xls'])
-SizeSSLVar = np.array(np.shape(SSLClimVar))
 SheetnameSSL = ['SSLTemp', 'SSLPrecip', 'SSLEvap', 'SSLSnow', 'SSLRainDay', 'SSLDayL0', 'SSLDayH40']
 Season = np.array(["Winter", "Spring", "Summer", "Autumn"])
-Write2XLS(SSLClimVar,SheetnameSSL,SizeSSLVar,Season,XLSNameSSL)
+Write2XLS(SSLClimVar,SheetnameSSL,Season,'ProjSSLVars.xls')
 #%%
 # ************************ Annual Projection *********************************#           
 AnnualTemp = np.empty((len(HTemp)))
@@ -300,11 +297,9 @@ AnnualClimVar = np.concatenate((AnnualTemp,AnnualSumVar),axis=1)
 ANNClimVar = np.reshape(AnnualClimVar, (400,1,7))
 #%%
 # *************** Export Annual Output in an Excel file **********************#
-XLSNameANN = np.array(['ProjAnnVars.xls'])
-SizeANNVar = np.array(np.shape(ANNClimVar))
 SheetnameANN = ['ANNTemp', 'ANNPrecip', 'ANNEvap', 'ANNSnow', 'ANNRainDay', 'ANNDayL0', 'ANNDayH40']
 Year = np.array(["Yearly"])
-Write2XLS(ANNClimVar,SheetnameANN,SizeANNVar,Year,XLSNameANN) 
+Write2XLS(ANNClimVar,SheetnameANN,Year,'ProjAnnVars.xls') 
 #%%
 # ************************* Plot Outputs *************************************#
 PlotClimVar(SSLClimVar,SSLClimVar,0,2,0,0,'Winter','Summer','Seasonal Mean Temperature','Changes in Winter and Summer Temperature','SSLTemp')   
